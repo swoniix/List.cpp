@@ -1,0 +1,189 @@
+#include <iostream>
+using namespace std;
+
+struct Element
+{
+  char data;
+  Element *Next;
+};
+
+class List
+{
+  Element *Head;
+  Element *Tail;
+  int Count;
+
+public:
+  List();
+  ~List();
+  void Add(char data);
+  void Del();
+  void DelAll();
+  void Print();
+  int GetCount();
+  void Insert(char data, int pos);
+  void DeleteAt(int pos);
+  int Find(char data);
+};
+
+List::List()
+{
+  Head = Tail = NULL;
+  Count = 0;
+}
+
+List::~List()
+{
+  DelAll();
+}
+
+int List::GetCount()
+{
+  return Count;
+}
+
+void List::Add(char data)
+{
+  Element *temp = new Element;
+  temp->data = data;
+  temp->Next = NULL;
+  if (Head != NULL)
+  {
+    Tail->Next = temp;
+    Tail = temp;
+  }
+  else
+  {
+    Head = Tail = temp;
+  }
+}
+
+void List::Del()
+{
+  Element *temp = Head;
+  Head = Head->Next;
+  delete temp;
+}
+
+void List::DelAll()
+{
+  while (Head != 0)
+    Del();
+}
+
+void List::Print()
+{
+  Element *temp = Head;
+  while (temp != 0)
+  {
+    cout << temp->data << " ";
+    temp = temp->Next;
+  }
+
+  cout << "\n\n";
+}
+
+void List::Insert(char data, int pos)
+{
+  if (pos < 0 || pos > Count)
+  {
+    cout << "Wrong position/" << endl;
+    return;
+  }
+  Element *temp = new Element;
+  temp->data = data;
+  temp->Next = NULL;
+  if (pos == 0)
+  {
+    temp->Next = Head;
+    Head = temp;
+    if (Count == 0)
+      Tail = temp;
+  }
+  else
+  {
+    Element *prev = Head;
+    for (int i = 0; i < pos - 1; i++)
+      prev = prev->Next;
+
+    temp->Next = prev->Next;
+    prev->Next = temp;
+
+    if (temp->Next == NULL)
+      Tail = temp;
+  }
+  Count++;
+}
+void List::DeleteAt(int pos)
+{
+  if (pos < 0 || pos >= Count)
+  {
+    cout << "Wrong position/" << endl;
+    return;
+  }
+  if (pos == 0)
+  {
+    Del();
+    return;
+  }
+  Element *prev = Head;
+  for (int i = 0; i < pos - 1; i++)
+  {
+    prev = prev->Next;
+  }
+  Element *toDelete = prev->Next;
+  prev->Next = toDelete->Next;
+  if (toDelete == Tail)
+  {
+    Tail = prev;
+  }
+  delete toDelete;
+  Count--;
+}
+int List::Find(char data)
+{
+  Element *temp = Head;
+  int pos = 0;
+  while (temp != NULL)
+  {
+    if (temp->data == data)
+    {
+      return pos;
+    }
+    temp = temp->Next;
+    pos++;
+  }
+  return -1; //! find
+}
+int main()
+{
+  List lst;
+  char s[] = "Hello, World!";
+  cout << s << "\n\n";
+  int len = strlen(s);
+  for (int i = 0; i < len; i++)
+  {
+    lst.Add(s[i]);
+  }
+  cout << "Current list ";
+  lst.Print();
+
+  lst.Insert('*', 5);
+  cout << "After adding: ";
+  lst.Print();
+
+  lst.DeleteAt(2);
+  cout << "After deleting position 2: ";
+  lst.Print();
+
+  char findChar = 'W';
+  int pos = lst.Find(findChar);
+  if (pos != -1)
+  {
+    cout << "Element '" << findChar << "'has been found  " << pos << "\n";
+  }
+  else
+  {
+    cout << "Element '" << findChar << "' hasn't been found\n";
+  }
+}
