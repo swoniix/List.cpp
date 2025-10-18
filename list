@@ -158,7 +158,7 @@ int List::Find(char data)
 int main()
 {
   List lst;
-  char s[] = "Hello, World!";
+  char s = "Hello, World!";
   cout << s << "\n\n";
   int len = strlen(s);
   for (int i = 0; i < len; i++)
